@@ -1,0 +1,4 @@
+-lib heaps
+-js bin/main.js
+-main Main
+-debug
