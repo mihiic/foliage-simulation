@@ -1,9 +1,7 @@
-import h3d.prim.MeshPrimitive;
+import format.swf.Data.MorphShapeData1;
+import generation.LinePath;
 import h3d.scene.CameraController;
-import h3d.prim.Grid;
-import h3d.shader.ColorAdd;
 import h3d.prim.Cube;
-import h3d.prim.UV;
 import hxd.IndexBuffer;
 import h3d.col.Point;
 import h3d.Vector;
@@ -14,6 +12,8 @@ class Main extends hxd.App {
 	private var time:Float = 0;
 	private var obj:Mesh;
 	private var y = 0;
+
+	private var path: LinePath;
 
 	override function init() {
 		var idx = new hxd.IndexBuffer();
@@ -43,6 +43,14 @@ class Main extends hxd.App {
 		s3d.camera.target = new Vector(0, 0, 0);
 		s3d.camera.pos.set(-0.1, 0, 5);
 		new CameraController(s3d).loadFromCamera();
+
+		this.path = new LinePath([
+			new Point(0, 0, 0),
+			new Point(0, 0.5, 0.5),
+			new Point(0, 0, 1)
+		]);
+		this.path.enableDebug(s3d);
+		this.path.render();
 	}
 
 	override function update(dt:Float) {

@@ -1,4 +1,7 @@
 -lib heaps
 -js bin/main.js
+
+--class-path src
 -main Main
+
 -debug
