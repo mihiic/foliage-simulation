@@ -1,4 +1,5 @@
 package generation;
+
 import h3d.scene.Graphics;
 import h3d.scene.Scene;
 import h3d.col.Point;
@@ -16,6 +17,10 @@ class LinePath {
 
     public function setPoints(points: Array<Point>) {
         _points = points;
+    }
+
+    public function interpolatedPoint(position: Float) {
+        return new Point(0, 0, 0);
     }
 
     public function enableDebug(s3d: Scene) {
