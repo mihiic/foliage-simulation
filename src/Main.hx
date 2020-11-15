@@ -1,3 +1,4 @@
+import generation.BasicGrass;
 import format.swf.Data.MorphShapeData1;
 import generation.LinePath;
 import h3d.scene.CameraController;
@@ -51,6 +52,8 @@ class Main extends hxd.App {
 		]);
 		this.path.enableDebug(s3d);
 		this.path.render();
+
+		var grass = new BasicGrass(s3d);
 	}
 
 	override function update(dt:Float) {
