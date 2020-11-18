@@ -27,7 +27,7 @@ class BasicGrass {
 
     private function generateVertices() {
         this._vertices = [
-            new Point(0, 0.25, 0),
+            new Point(0, 0.4, 0),
             new Point(0, -0.25, 0),
             new Point(0, 0.15, 0.25),
             new Point(0, -0.15, 0.25),
