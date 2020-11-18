@@ -1,3 +1,4 @@
+import generation.PlantTrunkGenerator;
 import generation.BasicGrass;
 import format.swf.Data.MorphShapeData1;
 import generation.LinePath;
@@ -32,7 +33,7 @@ class Main extends hxd.App {
 
 		var polygon = new h3d.prim.Polygon(vertices, idx);
 		polygon.addNormals();
-		obj = new Mesh(polygon, s3d);
+		// obj = new Mesh(polygon, s3d);
 
 		var cube = new Cube(0.1, 0.1, 0.1, true);
 		cube.unindex();
@@ -53,7 +54,7 @@ class Main extends hxd.App {
 		this.path.enableDebug(s3d);
 		this.path.render();
 
-		var grass = new BasicGrass(s3d);
+		var grass = new PlantTrunkGenerator(s3d);
 	}
 
 	override function update(dt:Float) {
