@@ -15,6 +15,8 @@ class PlantTrunkGenerator {
     private var _material: Material;
     private var _scene: Scene;
 
+    private var _basePolygonSides: Int;
+
     public function new(scene: Scene) {
         this._scene = scene;
 
@@ -30,17 +32,21 @@ class PlantTrunkGenerator {
             new Point(-0.5, 0.7, 0),
             new Point(0.9, 0, 0)
         ];
+
+        this._basePolygonSides = 3;
     }
 
     private function extrapolateBaseShape() {
         var currentHeight: Float = 0;
+        var currentScale = 1.0;
         var i = 1;
         while (i < 8) {
-            currentHeight = i * 0.1;
+            currentHeight = i * 0.5;
+            currentScale = 1 - i * 0.1;
 
-            _vertices.push(new Point(-0.4, -0.7, currentHeight));
-            _vertices.push(new Point(-0.5, 0.7, currentHeight));
-            _vertices.push(new Point(0.9, 0, currentHeight));
+            _vertices.push(new Point(-0.4 * currentScale, -0.7 * currentScale, currentHeight));
+            _vertices.push(new Point(-0.5 * currentScale, 0.7 * currentScale, currentHeight));
+            _vertices.push(new Point(0.9 * currentScale, 0, currentHeight));
 
             i++;
         }
@@ -50,7 +56,40 @@ class PlantTrunkGenerator {
         _indexBuffer = new IndexBuffer();
 
         var lastLeadingIndex: Int = _vertices.length - 2;
-        trace(lastLeadingIndex);
+        
+        // pseudo
+        // for each two vertices in a base, get next layer and form quad from
+        // 2 triangles polygons
+        // last side loops back to first
+        var currentVertexInLoop = 0;
+        var currentLoop = 0;
+
+        while (currentLoop < _vertices.length / _basePolygonSides) {
+            while (currentVertexInLoop < _basePolygonSides) {
+                var strip = [
+                    currentLoop * _basePolygonSides + currentVertexInLoop, 
+                    currentLoop * _basePolygonSides + (currentVertexInLoop + 1) % _basePolygonSides,
+                    (currentLoop + 1) * _basePolygonSides + currentVertexInLoop,
+                    (currentLoop + 1) * _basePolygonSides + (currentVertexInLoop + 1) % _basePolygonSides
+                ];
+
+                // 0 -> 3 -> 1
+                // 0 -> 2 -> 3
+                _indexBuffer.push(strip[0]);
+                _indexBuffer.push(strip[3]);
+                _indexBuffer.push(strip[1]);
+
+                _indexBuffer.push(strip[0]);
+                _indexBuffer.push(strip[2]);
+                _indexBuffer.push(strip[3]);
+
+                currentVertexInLoop++;
+            }
+            currentLoop++;
+        }
+
+
+        /*trace(lastLeadingIndex);
         var i = 0;
         while (i < lastLeadingIndex) {
             if (i % 2 == 0) {
@@ -64,7 +103,7 @@ class PlantTrunkGenerator {
             }
 
             i++;
-        }
+        }*/
     }
 
     private function generateObject() {
