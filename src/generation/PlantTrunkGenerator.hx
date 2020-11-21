@@ -67,8 +67,6 @@ class PlantTrunkGenerator {
                     (currentLoop + 1) * _basePolygonSides + (currentVertexInLoop + 1) % _basePolygonSides
                 ];
 
-                trace(strip);
-
                 _indexBuffer.push(strip[0]);
                 _indexBuffer.push(strip[3]);
                 _indexBuffer.push(strip[1]);
@@ -85,8 +83,6 @@ class PlantTrunkGenerator {
     }
 
     private function generateCapIndices() {
-        // triangle fan generation
-        // bottom cap -> CCW (normals facing downwards)
         var i: Int = 0;
         while (i < _basePolygonSides - 2) {
             _indexBuffer.push(0);
@@ -95,7 +91,6 @@ class PlantTrunkGenerator {
             i++;
         }
 
-        // upper cap -> CW (normals facing upwards)
         i = 0;
         var lastRingStart = _vertices.length - _basePolygonSides;
         while (i < _basePolygonSides - 2) {

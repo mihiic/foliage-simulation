@@ -19,7 +19,6 @@ class Main extends hxd.App {
 
 	override function init() {
 		var light = new DirLight(new Vector(1, 1, -1), s3d);
-		light.enableSpecular = false;
 		s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
 
 		s3d.camera.target = new Vector(0, 0, 0);
