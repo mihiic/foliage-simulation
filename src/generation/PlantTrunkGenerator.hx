@@ -39,14 +39,18 @@ class PlantTrunkGenerator {
 
     private function extrapolateBaseShape() {
         var currentHeight: Float = 0;
-        var currentScale = 1.0;
-        var i = 1;
+        var startingScale = 1.0;
+        var targetScale = 0.01;
+        var currentScale = startingScale;
+
+        var i = 0;
         while (i < 8) {
             currentHeight = i * 0.05;
+            currentScale = startingScale + i / 8 * (targetScale - startingScale);
 
-            _vertices.push(new Point(-0.04, -0.07, currentHeight));
-            _vertices.push(new Point(-0.05, 0.07, currentHeight));
-            _vertices.push(new Point(0.09, 0, currentHeight));
+            _vertices.push(new Point(-0.08 * currentScale, -0.14 * currentScale, currentHeight));
+            _vertices.push(new Point(-0.10 * currentScale, 0.14 * currentScale, currentHeight));
+            _vertices.push(new Point(0.18 * currentScale, 0, currentHeight));
 
             i++;
         }
