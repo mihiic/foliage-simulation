@@ -23,14 +23,15 @@ class PlantTrunkGenerator {
         this.generateShape();
         this.extrapolateBaseShape();
         this.generateIndexBuffer();
+        this.generateCapIndices();
         this.generateObject();
     }
 
     private function generateShape() {
         this._vertices = [
-            new Point(-0.4, -0.7, 0),
-            new Point(-0.5, 0.7, 0),
-            new Point(0.9, 0, 0)
+            new Point(-0.04, -0.07, 0),
+            new Point(-0.05, 0.07, 0),
+            new Point(0.09, 0, 0)
         ];
 
         this._basePolygonSides = 3;
@@ -41,12 +42,11 @@ class PlantTrunkGenerator {
         var currentScale = 1.0;
         var i = 1;
         while (i < 8) {
-            currentHeight = i * 0.5;
-            currentScale = 1 - i * 0.1;
+            currentHeight = i * 0.05;
 
-            _vertices.push(new Point(-0.4 * currentScale, -0.7 * currentScale, currentHeight));
-            _vertices.push(new Point(-0.5 * currentScale, 0.7 * currentScale, currentHeight));
-            _vertices.push(new Point(0.9 * currentScale, 0, currentHeight));
+            _vertices.push(new Point(-0.04, -0.07, currentHeight));
+            _vertices.push(new Point(-0.05, 0.07, currentHeight));
+            _vertices.push(new Point(0.09, 0, currentHeight));
 
             i++;
         }
@@ -55,16 +55,10 @@ class PlantTrunkGenerator {
     private function generateIndexBuffer() {
         _indexBuffer = new IndexBuffer();
 
-        var lastLeadingIndex: Int = _vertices.length - 2;
-        
-        // pseudo
-        // for each two vertices in a base, get next layer and form quad from
-        // 2 triangles polygons
-        // last side loops back to first
         var currentVertexInLoop = 0;
         var currentLoop = 0;
 
-        while (currentLoop < _vertices.length / _basePolygonSides) {
+        while (currentLoop < _vertices.length / _basePolygonSides - 1) {
             while (currentVertexInLoop < _basePolygonSides) {
                 var strip = [
                     currentLoop * _basePolygonSides + currentVertexInLoop, 
@@ -73,8 +67,8 @@ class PlantTrunkGenerator {
                     (currentLoop + 1) * _basePolygonSides + (currentVertexInLoop + 1) % _basePolygonSides
                 ];
 
-                // 0 -> 3 -> 1
-                // 0 -> 2 -> 3
+                trace(strip);
+
                 _indexBuffer.push(strip[0]);
                 _indexBuffer.push(strip[3]);
                 _indexBuffer.push(strip[1]);
@@ -86,28 +80,35 @@ class PlantTrunkGenerator {
                 currentVertexInLoop++;
             }
             currentLoop++;
+            currentVertexInLoop = 0;
+        }
+    }
+
+    private function generateCapIndices() {
+        // triangle fan generation
+        // bottom cap -> CCW (normals facing downwards)
+        var i: Int = 0;
+        while (i < _basePolygonSides - 2) {
+            _indexBuffer.push(0);
+            _indexBuffer.push(i + 1);
+            _indexBuffer.push(i + 2);
+            i++;
         }
 
-
-        /*trace(lastLeadingIndex);
-        var i = 0;
-        while (i < lastLeadingIndex) {
-            if (i % 2 == 0) {
-                _indexBuffer.push(i);
-                _indexBuffer.push(i + 1);
-                _indexBuffer.push(i + 2);
-            } else {
-                _indexBuffer.push(i);
-                _indexBuffer.push(i + 2);
-                _indexBuffer.push(i + 1);
-            }
-
+        // upper cap -> CW (normals facing upwards)
+        i = 0;
+        var lastRingStart = _vertices.length - _basePolygonSides;
+        while (i < _basePolygonSides - 2) {
+            _indexBuffer.push(lastRingStart);
+            _indexBuffer.push(lastRingStart + i + 2);
+            _indexBuffer.push(lastRingStart + i + 1);
             i++;
-        }*/
+        }
     }
 
     private function generateObject() {
         _polygon = new Polygon(_vertices, _indexBuffer);
+        _polygon.unindex();
         _polygon.addNormals();
 
         _mesh = new Mesh(_polygon, _scene);

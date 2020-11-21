@@ -18,29 +18,9 @@ class Main extends hxd.App {
 	private var path: LinePath;
 
 	override function init() {
-		var idx = new hxd.IndexBuffer();
-		var vertices = [
-			new Point(0.75, 0, 0),
-			new Point(-0.75, 1, 0),
-			new Point(-0.75, -1, 0)
-		];
-
-		idx.push(0);
-		idx.push(1);
-		idx.push(2);
-
 		var light = new DirLight(new Vector(1, 1, -1), s3d);
-
-		var polygon = new h3d.prim.Polygon(vertices, idx);
-		polygon.addNormals();
-		// obj = new Mesh(polygon, s3d);
-
-		var cube = new Cube(0.1, 0.1, 0.1, true);
-		cube.unindex();
-		cube.addNormals();
-		var mesh = new Mesh(cube, s3d);
-
-		mesh.material.color.set(1, 0, 0);
+		light.enableSpecular = false;
+		s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
 
 		s3d.camera.target = new Vector(0, 0, 0);
 		s3d.camera.pos.set(-0.1, 0, 5);
