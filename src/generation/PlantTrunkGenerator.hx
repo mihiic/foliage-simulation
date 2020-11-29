@@ -18,8 +18,19 @@ class PlantTrunkGenerator {
     private var _basePolygonSides: Int;
     private var _baseVertices: Array<Point>;
 
-    public function new(scene: Scene) {
+    private var _levelOfDetail: Int;
+    private var _heightPerSegment: Float;
+
+    public function new(scene: Scene, levelOfDetail = 8, ?height: Float) {
         this._scene = scene;
+
+        this._levelOfDetail = levelOfDetail;
+        if (height != null) {
+            _heightPerSegment = height / this._levelOfDetail;
+        } else {
+            var h = 0.5 + Math.random() * 1.5;
+            _heightPerSegment = h / this._levelOfDetail;
+        }
 
         this.generateShape();
         this.extrapolateBaseShape();
@@ -53,9 +64,9 @@ class PlantTrunkGenerator {
         var currentScale = this.plantWidthCurve(0);
 
         var i = 1;
-        while (i < 8) {
-            currentHeight = i * 0.2;
-            currentScale = this.plantWidthCurve(i / 7.0);
+        while (i <= this._levelOfDetail) {
+            currentHeight = i * _heightPerSegment;
+            currentScale = this.plantWidthCurve(i / this._levelOfDetail);
 
             var j = 0;
             while (j < _basePolygonSides) {

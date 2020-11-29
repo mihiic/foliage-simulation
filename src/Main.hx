@@ -31,9 +31,9 @@ class Main extends hxd.App {
 			new Point(0, 0, 1)
 		]);
 		this.path.enableDebug(s3d);
-		this.path.render();
+		// this.path.render();
 
-		var grass = new PlantTrunkGenerator(s3d);
+		var grass = new PlantTrunkGenerator(s3d, 16, 1.2);
 	}
 
 	override function update(dt:Float) {
