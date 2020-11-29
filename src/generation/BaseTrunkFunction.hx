@@ -6,7 +6,7 @@ class BaseTrunkFunction {
         return 1;
     }
 
-    public function generateBaseVertices(): Array<Point> {
+    public function generateBaseVertices(?levelOfDetail: Int): Array<Point> {
         return [];
     }
 }

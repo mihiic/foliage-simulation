@@ -8,7 +8,7 @@ class LeafTrunk extends BaseTrunkFunction {
 		return Math.sin(offset * Math.PI);
 	}
 
-	override public function generateBaseVertices() {
+	override public function generateBaseVertices(?levelOfDetail: Int) {
 		return [
 			new Point(0, -0.1, 0),
 			new Point(-0.3, 0, 0),

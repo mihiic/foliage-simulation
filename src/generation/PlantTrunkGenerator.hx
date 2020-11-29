@@ -39,8 +39,11 @@ class PlantTrunkGenerator {
             _heightPerSegment = h / this._levelOfDetail;
         }
 
+        trace(trunkFunction);
         if (trunkFunction == null) {
             _trunkFunction = new LeafTrunk();
+        } else {
+            _trunkFunction = trunkFunction;
         }
 
         this.generateShape();
@@ -51,7 +54,7 @@ class PlantTrunkGenerator {
     }
 
     private function generateShape() {
-        this._vertices = this._trunkFunction.generateBaseVertices();
+        this._vertices = this._trunkFunction.generateBaseVertices(_levelOfDetail);
         this._basePolygonSides = this._vertices.length;
 
         this._baseVertices = [];
