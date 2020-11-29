@@ -1,3 +1,4 @@
+import generation.trunks.LeafTrunk;
 import generation.trunks.TyphaTrunk;
 import generation.PlantTrunkGenerator;
 import generation.LinePath;
@@ -21,7 +22,21 @@ class Main extends hxd.App {
 		s3d.camera.pos.set(-0.1, 0, 5);
 		new CameraController(s3d).loadFromCamera();
 
-		var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new TyphaTrunk());
+		// var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new TyphaTrunk());
+		var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new LeafTrunk());
+
+		// floor plane
+		var prim = new h3d.prim.Cube();
+		prim.unindex();
+		prim.addNormals();
+
+		var o = new Mesh(prim, s3d);
+		o.setPosition(-5, -5, 0);
+		o.scaleX = 10;
+		o.scaleY = 10;
+		o.scaleZ = 0.001;
+
+		o.material.color.set(0, 0.15, 0.25);
 	}
 
 	override function update(dt:Float) {
