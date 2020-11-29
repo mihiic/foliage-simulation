@@ -1,5 +1,6 @@
 package generation;
 
+import generation.trunks.LeafTrunk;
 import h3d.scene.Scene;
 import h3d.mat.Material;
 import h3d.scene.Mesh;
@@ -20,8 +21,14 @@ class PlantTrunkGenerator {
 
     private var _levelOfDetail: Int;
     private var _heightPerSegment: Float;
+    private var _trunkFunction: BaseTrunkFunction;
 
-    public function new(scene: Scene, levelOfDetail = 8, ?height: Float) {
+    public function new(
+        scene: Scene,
+        levelOfDetail = 8,
+        ?height: Float,
+        ?trunkFunction: BaseTrunkFunction
+    ) {
         this._scene = scene;
 
         this._levelOfDetail = levelOfDetail;
@@ -30,6 +37,10 @@ class PlantTrunkGenerator {
         } else {
             var h = 0.5 + Math.random() * 1.5;
             _heightPerSegment = h / this._levelOfDetail;
+        }
+
+        if (trunkFunction == null) {
+            _trunkFunction = new LeafTrunk();
         }
 
         this.generateShape();
@@ -144,6 +155,6 @@ class PlantTrunkGenerator {
 
     // calculates offset by using quadratic function with offset at base
     private function plantWidthCurve(offset: Float) {
-        return Math.sin(offset * Math.PI);
+        return _trunkFunction.calculateCurvePoint(offset);
     }
 }
