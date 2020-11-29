@@ -16,6 +16,7 @@ class PlantTrunkGenerator {
     private var _scene: Scene;
 
     private var _basePolygonSides: Int;
+    private var _baseVertices: Array<Point>;
 
     public function new(scene: Scene) {
         this._scene = scene;
@@ -36,31 +37,31 @@ class PlantTrunkGenerator {
         ];
 
         this._basePolygonSides = this._vertices.length;
+
+        this._baseVertices = [];
+        var i = 0;
+        while (i < this._basePolygonSides) {
+            var v = this._vertices[i];
+            _baseVertices.push(new Point(v.x, v.y, v.z));
+            _vertices[i].scale(this.plantWidthCurve(0));
+            i++;
+        }
     }
 
     private function extrapolateBaseShape() {
         var currentHeight: Float = 0;
-        var startingScale = 1.0;
-        var targetScale = 0.01;
-        var currentScale = startingScale;
+        var currentScale = this.plantWidthCurve(0);
 
-        var baseVertices = [];
-        var i = 0;
-        while (i < this._basePolygonSides) {
-            baseVertices.push(this._vertices[i]);
-            i++;
-        }
-
-        i = 1;
+        var i = 1;
         while (i < 8) {
-            currentHeight = i * 0.05;
-            currentScale = startingScale + i / 8 * (targetScale - startingScale);
+            currentHeight = i * 0.2;
+            currentScale = this.plantWidthCurve(i / 7.0);
 
             var j = 0;
             while (j < _basePolygonSides) {
                 var nextVertex = new Point(
-                    baseVertices[j].x * currentScale,
-                    baseVertices[j].y * currentScale,
+                    _baseVertices[j].x * currentScale,
+                    _baseVertices[j].y * currentScale,
                     currentHeight
                 );
                 _vertices.push(nextVertex);
@@ -132,6 +133,6 @@ class PlantTrunkGenerator {
 
     // calculates offset by using quadratic function with offset at base
     private function plantWidthCurve(offset: Float) {
-
+        return Math.sin(offset * Math.PI);
     }
 }

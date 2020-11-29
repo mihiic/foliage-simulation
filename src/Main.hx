@@ -21,7 +21,7 @@ class Main extends hxd.App {
 
 		// var light = new DirLight(new Vector(1, -1, 1), s3d);
 
-		s3d.camera.target = new Vector(0, 0, 0);
+		s3d.camera.target = new Vector(0, 0, 0.5);
 		s3d.camera.pos.set(-0.1, 0, 5);
 		new CameraController(s3d).loadFromCamera();
 
