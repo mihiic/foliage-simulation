@@ -29,12 +29,13 @@ class PlantTrunkGenerator {
 
     private function generateShape() {
         this._vertices = [
-            new Point(-0.04, -0.07, 0),
-            new Point(-0.05, 0.07, 0),
-            new Point(0.09, 0, 0)
+            new Point(0, -0.1, 0),
+            new Point(-0.1, 0, 0),
+            new Point(0, 0.1, 0),
+            new Point(0.1, 0, 0),
         ];
 
-        this._basePolygonSides = 3;
+        this._basePolygonSides = this._vertices.length;
     }
 
     private function extrapolateBaseShape() {
@@ -48,10 +49,10 @@ class PlantTrunkGenerator {
             currentHeight = i * 0.05;
             currentScale = startingScale + i / 8 * (targetScale - startingScale);
 
-            _vertices.push(new Point(-0.08 * currentScale, -0.14 * currentScale, currentHeight));
-            _vertices.push(new Point(-0.10 * currentScale, 0.14 * currentScale, currentHeight));
-            _vertices.push(new Point(0.18 * currentScale, 0, currentHeight));
-
+            _vertices.push(new Point(0, -0.2 * currentScale, currentHeight));
+            _vertices.push(new Point(-0.2 * currentScale, 0, currentHeight));
+            _vertices.push(new Point(0, 0.2 * currentScale, currentHeight));
+            _vertices.push(new Point(0.2 * currentScale, 0, currentHeight));
             i++;
         }
     }

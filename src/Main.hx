@@ -18,7 +18,7 @@ class Main extends hxd.App {
 	private var path: LinePath;
 
 	override function init() {
-		var light = new DirLight(new Vector(1, 1, -1), s3d);
+		var light = new DirLight(new Vector(1, -1, -1), s3d);
 		s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
 
 		s3d.camera.target = new Vector(0, 0, 0);
