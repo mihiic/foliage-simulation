@@ -17,7 +17,7 @@ class Main extends hxd.App {
 
 	override function init() {
 		light = new DirLight(new Vector(0, 1, -1), s3d);
-		// s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
+		s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
 
 		// var light = new DirLight(new Vector(1, -1, 1), s3d);
 

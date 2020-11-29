@@ -127,5 +127,6 @@ class PlantTrunkGenerator {
 
         _mesh = new Mesh(_polygon, _scene);
         _mesh.material.color.set(0.3, 0.8, 0.1);
+        _mesh.material.receiveShadows = false;
     }
 }
