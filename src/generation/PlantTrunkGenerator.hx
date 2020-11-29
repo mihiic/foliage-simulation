@@ -51,13 +51,7 @@ class PlantTrunkGenerator {
     }
 
     private function generateShape() {
-        this._vertices = [
-            new Point(0, -0.1, 0),
-            new Point(-0.3, 0, 0),
-            new Point(0, -0.05, 0),
-            new Point(0.3, 0, 0),
-        ];
-
+        this._vertices = this._trunkFunction.generateBaseVertices();
         this._basePolygonSides = this._vertices.length;
 
         this._baseVertices = [];

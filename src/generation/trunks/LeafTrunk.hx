@@ -1,10 +1,19 @@
 package generation.trunks;
+import h3d.col.Point;
 
 class LeafTrunk extends BaseTrunkFunction {
-    public function new() {
-    }
+	public function new() {}
 
-    override public function calculateCurvePoint(offset: Float) {
-        return  Math.sin(offset * Math.PI);
-    }
+	override public function calculateCurvePoint(offset:Float) {
+		return Math.sin(offset * Math.PI);
+	}
+
+	override public function generateBaseVertices() {
+		return [
+			new Point(0, -0.1, 0),
+			new Point(-0.3, 0, 0),
+			new Point(0, -0.05, 0),
+			new Point(0.3, 0, 0)
+		];
+	}
 }
