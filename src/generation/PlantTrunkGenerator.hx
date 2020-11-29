@@ -44,15 +44,15 @@ class PlantTrunkGenerator {
         var targetScale = 0.01;
         var currentScale = startingScale;
 
-        var i = 0;
+        var i = 1;
         while (i < 8) {
             currentHeight = i * 0.05;
             currentScale = startingScale + i / 8 * (targetScale - startingScale);
 
-            _vertices.push(new Point(0, -0.2 * currentScale, currentHeight));
-            _vertices.push(new Point(-0.2 * currentScale, 0, currentHeight));
-            _vertices.push(new Point(0, 0.2 * currentScale, currentHeight));
-            _vertices.push(new Point(0.2 * currentScale, 0, currentHeight));
+            _vertices.push(new Point(0, -0.1 * currentScale, currentHeight));
+            _vertices.push(new Point(-0.1 * currentScale, 0, currentHeight));
+            _vertices.push(new Point(0, 0.1 * currentScale, currentHeight));
+            _vertices.push(new Point(0.1 * currentScale, 0, currentHeight));
             i++;
         }
     }
