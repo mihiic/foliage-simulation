@@ -1,10 +1,7 @@
+import haxe.macro.Expr.ImportMode;
 import generation.PlantTrunkGenerator;
-import generation.BasicGrass;
-import format.swf.Data.MorphShapeData1;
 import generation.LinePath;
 import h3d.scene.CameraController;
-import h3d.prim.Cube;
-import hxd.IndexBuffer;
 import h3d.col.Point;
 import h3d.Vector;
 import h3d.scene.Mesh;
@@ -16,10 +13,13 @@ class Main extends hxd.App {
 	private var y = 0;
 
 	private var path: LinePath;
+	private var light: DirLight;
 
 	override function init() {
-		var light = new DirLight(new Vector(1, -1, -1), s3d);
-		s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
+		light = new DirLight(new Vector(0, 1, -1), s3d);
+		// s3d.lightSystem.ambientLight.set(0.2, 0.2, 0.2);
+
+		// var light = new DirLight(new Vector(1, -1, 1), s3d);
 
 		s3d.camera.target = new Vector(0, 0, 0);
 		s3d.camera.pos.set(-0.1, 0, 5);
@@ -27,7 +27,7 @@ class Main extends hxd.App {
 
 		this.path = new LinePath([
 			new Point(0, 0, 0),
-			new Point(0, 0.5, 0.5),
+			new Point(0, -0.5, 0.5),
 			new Point(0, 0, 1)
 		]);
 		this.path.enableDebug(s3d);
@@ -37,7 +37,11 @@ class Main extends hxd.App {
 	}
 
 	override function update(dt:Float) {
-		time += 0.1 * dt;
+		time += dt;
+
+		light.setDirection(
+			new Vector(Math.cos(time), Math.sin(time), -1)
+		);
 	}
 
 	static function main() {
