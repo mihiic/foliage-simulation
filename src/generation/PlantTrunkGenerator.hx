@@ -1,5 +1,6 @@
 package generation;
 
+import h3d.anim.Skin;
 import generation.trunks.LeafTrunk;
 import h3d.scene.Scene;
 import h3d.mat.Material;
@@ -52,6 +53,8 @@ class PlantTrunkGenerator {
         this.generateIndexBuffer();
         this.generateCapIndices();
         this.generateObject();
+
+        this.generateSkeleton();
     }
 
     public function setPosition(position: Point) {
@@ -158,5 +161,14 @@ class PlantTrunkGenerator {
     // calculates offset by using quadratic function with offset at base
     private function plantWidthCurve(offset: Float) {
         return _trunkFunction.calculateCurvePoint(offset);
+    }
+
+    private function generateSkeleton() {
+        var skeleton = new Skin('plant', _vertices.length, 2);
+        skeleton.primitive = _polygon;
+
+        skeleton.initWeights();
+        trace(skeleton);
+        trace(skeleton.allJoints);
     }
 }

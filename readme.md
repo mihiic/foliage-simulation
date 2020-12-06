@@ -11,3 +11,5 @@ https://www.researchgate.net/publication/222656093_Technologies_for_3D_mesh_comp
 
 Interpolation
 Colin Bennett, Robert C. Sharpley, Interpolation of Operators, Academic Press 1988
+
+ Magnenat-Thalmann, Nadia; Laperrière, Richard; Thalmann, Daniel (6–10 June 1988). "Joint-Dependent Local Deformations for Hand Animation and Object Grasping"
