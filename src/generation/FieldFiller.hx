@@ -26,12 +26,14 @@ class FieldFiller {
         _settings = {
             width: width,
             height: height,
-            density: 1 / density
+            density: density > 0 ? 1 / density : 1
         }
         _scene = scene;
 
         generateFieldBase();
-        populateField();
+        if (density > 0) {
+            populateField();
+        }
     }
 
     private function generateFieldBase() {
