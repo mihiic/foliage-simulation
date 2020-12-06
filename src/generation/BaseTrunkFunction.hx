@@ -9,4 +9,8 @@ class BaseTrunkFunction {
     public function generateBaseVertices(?levelOfDetail: Int): Array<Point> {
         return [];
     }
+
+    public function generateHeight(): Float {
+        return 0;
+    }
 }

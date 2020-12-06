@@ -16,4 +16,8 @@ class LeafTrunk extends BaseTrunkFunction {
 			new Point(0.3, 0, 0)
 		];
 	}
+
+	override public function generateHeight() {
+		return 0.5 + Math.random() * 1;
+	}
 }

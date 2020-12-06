@@ -27,7 +27,7 @@ class Main extends hxd.App {
 		var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new LeafTrunk());
 
 		// floor plane
-		var ff = new FieldFiller(s3d);
+		var ff = new FieldFiller(s3d, 8, 4);
 	}
 
 	override function update(dt:Float) {

@@ -32,12 +32,6 @@ class PlantTrunkGenerator {
         this._scene = scene;
 
         this._levelOfDetail = levelOfDetail;
-        if (height != null) {
-            _heightPerSegment = height / this._levelOfDetail;
-        } else {
-            var h = 0.5 + Math.random() * 1.5;
-            _heightPerSegment = h / this._levelOfDetail;
-        }
 
         trace(trunkFunction);
         if (trunkFunction == null) {
@@ -46,11 +40,22 @@ class PlantTrunkGenerator {
             _trunkFunction = trunkFunction;
         }
 
+        if (height != null) {
+            _heightPerSegment = height / this._levelOfDetail;
+        } else {
+            var h = trunkFunction.generateHeight();
+            _heightPerSegment = h / this._levelOfDetail;
+        }
+
         this.generateShape();
         this.extrapolateBaseShape();
         this.generateIndexBuffer();
         this.generateCapIndices();
         this.generateObject();
+    }
+
+    public function setPosition(position: Point) {
+        _mesh.setPosition(position.x, position.y, position.z);
     }
 
     private function generateShape() {

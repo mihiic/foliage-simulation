@@ -6,7 +6,7 @@ class TyphaTrunk extends BaseTrunkFunction {
 	public function new() {}
 
 	override public function calculateCurvePoint(offset:Float) {
-        if (offset < 0.6) {
+        if (offset < 0.7) {
             return 0.1;
         }
         if (offset > 0.98) {
@@ -37,6 +37,10 @@ class TyphaTrunk extends BaseTrunkFunction {
             i++;
         }
         return vertices;
+    }
+    
+    override public function generateHeight() {
+		return 1.2 + Math.random() * 1.5;
 	}
 }
 
