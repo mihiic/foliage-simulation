@@ -1,5 +1,6 @@
 package generation;
 
+import h3d.Matrix;
 import h3d.anim.Skin;
 import generation.trunks.LeafTrunk;
 import h3d.scene.Scene;
@@ -168,7 +169,63 @@ class PlantTrunkGenerator {
         skeleton.primitive = _polygon;
 
         skeleton.initWeights();
+
+        var joints: Array<Joint> = [];
+
+        var i = 0;
+        while (i <= _levelOfDetail) {
+            var joint = new Joint();
+            joint.index = i;
+            joint.bindIndex = i;
+
+            joint.defMat = getPoseMatrix(i);
+
+            if (i > 0) {
+                joint.parent = joints[joints.length - 1];
+            }
+            joints.push(joint);
+            i++;
+        }
+
+        skeleton.setJoints(joints, [joints[0]]);
+
         trace(skeleton);
-        trace(skeleton.allJoints);
+        trace(skeleton.allJoints.length);
+    }
+
+    private function getCenterOfMassForPosition(ring: Int) {
+        var points = [];
+        var i = ring * _baseVertices.length;
+        while (i < (ring + 1) * _baseVertices.length) {
+            points.push(_vertices[i]);
+            i++;
+        }
+
+        var x: Float = 0;
+        var y: Float = 0;
+        var z: Float = 0;
+
+        for (point in points) {
+            x += point.x;
+            y += point.y;
+            z += point.z;
+        }
+
+        var normalFactor = 1 / points.length;
+        return new Point(x * normalFactor, y * normalFactor, z * normalFactor);
+    }
+
+    private function getPoseMatrix(ring: Int): Matrix {
+        var matrix = new Matrix();
+        var point = this.getCenterOfMassForPosition(ring);
+        matrix.initTranslation(
+            point.x, point.y, point.z
+        );
+
+        return matrix;
+    }
+
+    private function renderSkeleton() {
+        
     }
 }
