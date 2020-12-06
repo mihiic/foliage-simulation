@@ -1,3 +1,4 @@
+import generation.FieldFiller;
 import generation.trunks.LeafTrunk;
 import generation.trunks.TyphaTrunk;
 import generation.PlantTrunkGenerator;
@@ -26,17 +27,7 @@ class Main extends hxd.App {
 		var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new LeafTrunk());
 
 		// floor plane
-		var prim = new h3d.prim.Cube();
-		prim.unindex();
-		prim.addNormals();
-
-		var o = new Mesh(prim, s3d);
-		o.setPosition(-5, -5, 0);
-		o.scaleX = 10;
-		o.scaleY = 10;
-		o.scaleZ = 0.001;
-
-		o.material.color.set(0, 0.15, 0.25);
+		var ff = new FieldFiller(s3d);
 	}
 
 	override function update(dt:Float) {
