@@ -1,3 +1,4 @@
+import h3d.Buffer;
 import hxd.IndexBuffer;
 import h3d.prim.Polygon;
 
@@ -11,7 +12,7 @@ class SkinWeightsPolygon extends Polygon {
     override function alloc( engine : h3d.Engine ) {
         dispose();
         
-        trace(points);
+        trace('number of vertices', points.length);
 
 		var size = 3;
 		var names = ["position"];
@@ -38,15 +39,11 @@ class SkinWeightsPolygon extends Polygon {
         }
         if (weights != null) {
             names.push("weights");
-            /*positions.push(size);
-            size += 1;*/
-
             names.push("indexes");
-            /*positions.push(size);
-            size += 1;*/
         }
 
         var skinBuffser = new hxd.FloatBuffer();
+        var indexIndex = new hxd.FloatBuffer();
         var buf = new hxd.FloatBuffer();
 		for( k in 0...points.length ) {
 			var p = points[k];
@@ -78,21 +75,32 @@ class SkinWeightsPolygon extends Polygon {
             }
             if (weights != null) {
                 var w = weights[k];
-                skinBuffser.push(w);
-                skinBuffser.push(0.5);
+                skinBuffser.push(w * 0.33);
+                indexIndex.push(0);
+                
+                // WTF!?!?!?
+                if (k == 35) {
+                    skinBuffser.push(w * 0.33);
+                    indexIndex.push(0);
+
+                    skinBuffser.push(w * 0.33);
+                    indexIndex.push(0);
+                }
             }
 		}
 		var flags : Array<h3d.Buffer.BufferFlag> = [];
 		if( idx == null ) flags.push(Triangles);
 		if( normals == null || tangents != null ) flags.push(RawFormat);
 		buffer = h3d.Buffer.ofFloats(buf, size, flags);
-        var sbuf = h3d.Buffer.ofFloats(skinBuffser, 2, flags);
+        var sbuf = h3d.Buffer.ofFloats(skinBuffser, 1, flags);
 
         for( i in 0...names.length ) {
-            if (names[i] == 'weights' || names[i] == 'indexes') {
-                var stride = names[i] == 'weights' ? 0 : 1;
-                addBuffer(names[i], sbuf, stride);
-            } else {
+            if (names[i] == 'weights') {
+                addBuffer(names[i], sbuf, 0);
+            } else if (names[i] == "indexes") {
+                addBuffer(names[i], Buffer.ofFloats(indexIndex, 1, flags), 0);
+            }
+            else {
                 addBuffer(names[i], buffer, positions[i]);
             }
         }

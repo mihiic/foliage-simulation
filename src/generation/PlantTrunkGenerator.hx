@@ -160,16 +160,19 @@ class PlantTrunkGenerator {
 
         _vertices = _polygon.points;
 
-        var last3 = [];
-        var i = _vertices.length - 3;
+        var i = 0;
         while (i < _vertices.length) {
-            last3.push(_vertices[i]);
-            i++;
+            var last3 = [];
+            var k = 0;
+            while (k < 3) {
+                last3.push(_vertices[i + k]);
+                k++;
+            }
+            i += 3;
+            var lp = new LinePath(last3);
+            lp.enableDebug(_scene);
+            lp.render();
         }
-        trace(last3);
-        var lp = new LinePath(last3);
-        lp.enableDebug(_scene);
-        lp.render();
 
         //_mesh = new Mesh(_polygon, _scene);
         //_mesh.material.color.set(0.3, 0.8, 0.1);
@@ -195,7 +198,7 @@ class PlantTrunkGenerator {
             joint.defMat = getPoseMatrix(i);
             var m = new Matrix();
             m.identity();
-            m.initTranslation(0, 0, 0);
+            m.initTranslation(0, 0, 2);
             joint.transPos = m;
             joints.push(joint);
             i++;
@@ -280,8 +283,7 @@ class PlantTrunkGenerator {
         var buffer = [];
         var i = 0;
         while (i < _vertices.length) {
-            // buffer.push(_skeleton.vertexWeights[i]);
-            buffer.push(0.25);
+            buffer.push(_skeleton.vertexWeights[i]);
             i++;
         }
 
