@@ -1,5 +1,10 @@
 package generation;
 
+import h3d.prim.FBXModel;
+import h3d.prim.MeshPrimitive;
+import h3d.scene.MultiMaterial;
+import h3d.scene.CameraController;
+import haxe.ds.Vector;
 import h3d.Matrix;
 import h3d.anim.Skin;
 import generation.trunks.LeafTrunk;
@@ -13,7 +18,7 @@ import h3d.col.Point;
 class PlantTrunkGenerator {
     private var _vertices: Array<Point>;
     private var _indexBuffer: IndexBuffer;
-    private var _polygon: Polygon;
+    private var _polygon: SkinWeightsPolygon;
     private var _mesh: Mesh;
     private var _material: Material;
     private var _scene: Scene;
@@ -36,7 +41,6 @@ class PlantTrunkGenerator {
 
         this._levelOfDetail = levelOfDetail;
 
-        trace(trunkFunction);
         if (trunkFunction == null) {
             _trunkFunction = new LeafTrunk();
         } else {
@@ -151,13 +155,13 @@ class PlantTrunkGenerator {
     }
 
     private function generateObject() {
-        _polygon = new Polygon(_vertices, _indexBuffer);
+        _polygon = new SkinWeightsPolygon(_vertices, _indexBuffer);
         _polygon.unindex();
         _polygon.addNormals();
 
-        _mesh = new Mesh(_polygon, _scene);
-        _mesh.material.color.set(0.3, 0.8, 0.1);
-        _mesh.material.receiveShadows = false;
+        //_mesh = new Mesh(_polygon, _scene);
+        //_mesh.material.color.set(0.3, 0.8, 0.1);
+        // _mesh.material.receiveShadows = false;
     }
 
     // calculates offset by using quadratic function with offset at base
@@ -169,30 +173,43 @@ class PlantTrunkGenerator {
         _skeleton = new Skin('plant', _vertices.length, 2);
         _skeleton.primitive = _polygon;
 
-        _skeleton.initWeights();
-
         var joints: Array<Joint> = [];
 
         var i = 0;
         while (i <= _levelOfDetail) {
             var joint = new Joint();
             joint.index = i;
-            joint.bindIndex = i;
+            // joint.bindIndex = i;
 
             joint.defMat = getPoseMatrix(i);
+            var m = new Matrix();
+            m.identity();
+            joint.transPos = m;
 
-            if (i > 0) {
+            /*if (i > 0) {
                 joint.parent = joints[joints.length - 1];
-            }
+            }*/
             joints.push(joint);
             i++;
         }
         _skeleton.setJoints(joints, [joints[0]]);
+        
+        var ring = 0;
+        for (joint in joints) {
+            i = 0;
+            while (i < _baseVertices.length) {
+                _skeleton.addInfluence(ring * _baseVertices.length + i, joint, 1);
+                i++;
+            }
+            ring++;
+        }
+
+        _skeleton.initWeights();
+        // _skeleton.split(1, [], null);
+        //_skeleton.initWeights();
 
         renderSkeleton();
-
-        //trace(_skeleton);
-        //trace(_skeleton.allJoints.length);
+        assignVerticesToJoints();
     }
 
     private function getCenterOfMassForPosition(ring: Int) {
@@ -231,7 +248,7 @@ class PlantTrunkGenerator {
         var points = [];
 
         for (joint in _skeleton.allJoints) {
-            trace(joint.defMat);
+            // trace(joint.defMat);
             points.push(new Point(
                 joint.defMat.tx, joint.defMat.ty, joint.defMat.tz
             ));
@@ -240,5 +257,62 @@ class PlantTrunkGenerator {
         var line = new LinePath(points);
         line.enableDebug(_scene);
         line.render();
+    }
+
+    private function assignVerticesToJoints() {
+        var i = 0;
+        var vertexJoints = new Vector<Int>(_vertices.length);
+        var vertexWeights = new Vector<Float>(_vertices.length);
+        while (i < _vertices.length) {
+            vertexJoints[i] = 1;
+            vertexWeights[i] = 1;
+            i++;
+        }
+
+        //_skeleton.vertexJoints = vertexJoints;
+        //_skeleton.vertexWeights = vertexWeights;
+
+        // _skeleton.allJoints[1].defMat.ty = 2;
+
+        var material = Material.create();
+        material.color.set(0.3, 0.8, 0.1);
+        //var skin = new h3d.scene.Skin(_skeleton, [material], _scene);
+        //var mesh = new Mesh(_polygon, material, _scene);
+        // var multiMaterialMesh = new MultiMaterial(_polygon, [material], _scene);
+        this.testBasicSkin();
+        //trace(skin.materials);
+        //skin.material.color.set(0.3, 0.8, 0.1);
+        _mesh = new Mesh(_polygon, _scene);
+        _mesh.material.color.set(0.3, 0.8, 0.1);
+         _mesh.material.receiveShadows = false;
+        // skin.showJoints = true;
+    }
+
+    private function testBasicSkin() {
+        var skeleton = new Skin('skin', _vertices.length, 1);
+        skeleton.primitive = _polygon;
+        skeleton.initWeights();
+
+        var material = Material.create();
+        material.color.set(0.3, 0.8, 0.1);
+        material.receiveShadows = false;
+
+        var index = [];
+        var buffer = [];
+        var i = 0.0;
+        for (v in _vertices) {
+            index.push(0);
+            buffer.push(i);
+            i++;
+        }
+
+        _skeleton.split(1, index, null);
+        _polygon.setWeights(buffer);
+        // trace(_skeleton.primitive.)
+        // new MeshPrimitive();
+        var skin = new h3d.scene.Skin(_skeleton, [material], _scene);
+        skin.showJoints = true;
+        // new MeshPrimitive
+        //new Scene
     }
 }
