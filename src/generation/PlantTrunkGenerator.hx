@@ -24,6 +24,7 @@ class PlantTrunkGenerator {
     private var _levelOfDetail: Int;
     private var _heightPerSegment: Float;
     private var _trunkFunction: BaseTrunkFunction;
+    private var _skeleton: Skin;
 
     public function new(
         scene: Scene,
@@ -165,10 +166,10 @@ class PlantTrunkGenerator {
     }
 
     private function generateSkeleton() {
-        var skeleton = new Skin('plant', _vertices.length, 2);
-        skeleton.primitive = _polygon;
+        _skeleton = new Skin('plant', _vertices.length, 2);
+        _skeleton.primitive = _polygon;
 
-        skeleton.initWeights();
+        _skeleton.initWeights();
 
         var joints: Array<Joint> = [];
 
@@ -186,11 +187,12 @@ class PlantTrunkGenerator {
             joints.push(joint);
             i++;
         }
+        _skeleton.setJoints(joints, [joints[0]]);
 
-        skeleton.setJoints(joints, [joints[0]]);
+        renderSkeleton();
 
-        trace(skeleton);
-        trace(skeleton.allJoints.length);
+        //trace(_skeleton);
+        //trace(_skeleton.allJoints.length);
     }
 
     private function getCenterOfMassForPosition(ring: Int) {
@@ -226,6 +228,17 @@ class PlantTrunkGenerator {
     }
 
     private function renderSkeleton() {
-        
+        var points = [];
+
+        for (joint in _skeleton.allJoints) {
+            trace(joint.defMat);
+            points.push(new Point(
+                joint.defMat.tx, joint.defMat.ty, joint.defMat.tz
+            ));
+        }
+
+        var line = new LinePath(points);
+        line.enableDebug(_scene);
+        line.render();
     }
 }

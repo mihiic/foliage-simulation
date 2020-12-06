@@ -24,7 +24,7 @@ class Main extends hxd.App {
 		new CameraController(s3d).loadFromCamera();
 
 		// var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new TyphaTrunk());
-		var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new LeafTrunk());
+		var grass = new PlantTrunkGenerator(s3d, 3, 1.2, new LeafTrunk());
 
 		// floor plane
 		var ff = new FieldFiller(s3d, 8, 0);
