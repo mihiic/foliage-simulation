@@ -13,3 +13,5 @@ Interpolation
 Colin Bennett, Robert C. Sharpley, Interpolation of Operators, Academic Press 1988
 
  Magnenat-Thalmann, Nadia; Laperrière, Richard; Thalmann, Daniel (6–10 June 1988). "Joint-Dependent Local Deformations for Hand Animation and Object Grasping"
+
+ Gentle, James E. (2007). "Matrix Transformations and Factorizations". Matrix Algebra
