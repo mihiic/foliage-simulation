@@ -1,3 +1,4 @@
+import generation.trunks.CubeTrunk;
 import generation.FieldFiller;
 import generation.trunks.LeafTrunk;
 import generation.trunks.TyphaTrunk;
@@ -13,8 +14,8 @@ class Main extends hxd.App {
 	private var obj:Mesh;
 	private var y = 0;
 
-	private var path: LinePath;
-	private var light: DirLight;
+	private var path:LinePath;
+	private var light:DirLight;
 
 	override function init() {
 		light = new DirLight(new Vector(0, 1, -1), s3d);
@@ -24,7 +25,7 @@ class Main extends hxd.App {
 		new CameraController(s3d).loadFromCamera();
 
 		// var grass = new PlantTrunkGenerator(s3d, 8, 1.2, new TyphaTrunk());
-		var grass = new PlantTrunkGenerator(s3d, 3, 1.2, new LeafTrunk());
+		var grass = new PlantTrunkGenerator(s3d, 1, 1.2, new CubeTrunk());
 
 		// floor plane
 		var ff = new FieldFiller(s3d, 8, 0);
@@ -33,9 +34,7 @@ class Main extends hxd.App {
 	override function update(dt:Float) {
 		time += dt;
 
-		light.setDirection(
-			new Vector(Math.cos(time), Math.sin(time), -1)
-		);
+		light.setDirection(new Vector(Math.cos(time), Math.sin(time), -1));
 	}
 
 	static function main() {

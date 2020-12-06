@@ -1,17 +1,11 @@
 package generation;
 
-import h3d.prim.FBXModel;
-import h3d.prim.MeshPrimitive;
-import h3d.scene.MultiMaterial;
-import h3d.scene.CameraController;
-import haxe.ds.Vector;
 import h3d.Matrix;
 import h3d.anim.Skin;
 import generation.trunks.LeafTrunk;
 import h3d.scene.Scene;
 import h3d.mat.Material;
 import h3d.scene.Mesh;
-import h3d.prim.Polygon;
 import hxd.IndexBuffer;
 import h3d.col.Point;
 
@@ -30,6 +24,7 @@ class PlantTrunkGenerator {
     private var _heightPerSegment: Float;
     private var _trunkFunction: BaseTrunkFunction;
     private var _skeleton: Skin;
+    private var _shapeVertices: Array<Point>;
 
     public function new(
         scene: Scene,
@@ -69,6 +64,10 @@ class PlantTrunkGenerator {
 
     private function generateShape() {
         this._vertices = this._trunkFunction.generateBaseVertices(_levelOfDetail);
+        this._shapeVertices = [];
+        for (v in _vertices) {
+            this._shapeVertices.push(v);
+        }
         this._basePolygonSides = this._vertices.length;
 
         this._baseVertices = [];
@@ -159,6 +158,19 @@ class PlantTrunkGenerator {
         _polygon.unindex();
         _polygon.addNormals();
 
+        _vertices = _polygon.points;
+
+        var last3 = [];
+        var i = _vertices.length - 3;
+        while (i < _vertices.length) {
+            last3.push(_vertices[i]);
+            i++;
+        }
+        trace(last3);
+        var lp = new LinePath(last3);
+        lp.enableDebug(_scene);
+        lp.render();
+
         //_mesh = new Mesh(_polygon, _scene);
         //_mesh.material.color.set(0.3, 0.8, 0.1);
         // _mesh.material.receiveShadows = false;
@@ -170,13 +182,12 @@ class PlantTrunkGenerator {
     }
 
     private function generateSkeleton() {
-        _skeleton = new Skin('plant', _vertices.length, 2);
+        _skeleton = new Skin('plant', _vertices.length, 1);
         _skeleton.primitive = _polygon;
-
         var joints: Array<Joint> = [];
 
         var i = 0;
-        while (i <= _levelOfDetail) {
+        while (i <= 0) {
             var joint = new Joint();
             joint.index = i;
             // joint.bindIndex = i;
@@ -184,31 +195,24 @@ class PlantTrunkGenerator {
             joint.defMat = getPoseMatrix(i);
             var m = new Matrix();
             m.identity();
+            m.initTranslation(0, 0, 0);
             joint.transPos = m;
-
-            /*if (i > 0) {
-                joint.parent = joints[joints.length - 1];
-            }*/
             joints.push(joint);
             i++;
         }
-        _skeleton.setJoints(joints, [joints[0]]);
         
+        _skeleton.setJoints(joints, []);
+
         var ring = 0;
         for (joint in joints) {
             i = 0;
-            while (i < _baseVertices.length) {
-                _skeleton.addInfluence(ring * _baseVertices.length + i, joint, 1);
+            while (i < _vertices.length) {
+                _skeleton.addInfluence(i, joint, 1);
                 i++;
             }
-            ring++;
         }
-
         _skeleton.initWeights();
-        // _skeleton.split(1, [], null);
-        //_skeleton.initWeights();
-
-        renderSkeleton();
+        trace(_skeleton);
         assignVerticesToJoints();
     }
 
@@ -216,7 +220,7 @@ class PlantTrunkGenerator {
         var points = [];
         var i = ring * _baseVertices.length;
         while (i < (ring + 1) * _baseVertices.length) {
-            points.push(_vertices[i]);
+            points.push(_shapeVertices[i]);
             i++;
         }
 
@@ -237,6 +241,7 @@ class PlantTrunkGenerator {
     private function getPoseMatrix(ring: Int): Matrix {
         var matrix = new Matrix();
         var point = this.getCenterOfMassForPosition(ring);
+        trace(point);
         matrix.initTranslation(
             point.x, point.y, point.z
         );
@@ -260,59 +265,29 @@ class PlantTrunkGenerator {
     }
 
     private function assignVerticesToJoints() {
-        var i = 0;
-        var vertexJoints = new Vector<Int>(_vertices.length);
-        var vertexWeights = new Vector<Float>(_vertices.length);
-        while (i < _vertices.length) {
-            vertexJoints[i] = 1;
-            vertexWeights[i] = 1;
-            i++;
-        }
-
-        //_skeleton.vertexJoints = vertexJoints;
-        //_skeleton.vertexWeights = vertexWeights;
-
-        // _skeleton.allJoints[1].defMat.ty = 2;
-
-        var material = Material.create();
-        material.color.set(0.3, 0.8, 0.1);
-        //var skin = new h3d.scene.Skin(_skeleton, [material], _scene);
-        //var mesh = new Mesh(_polygon, material, _scene);
-        // var multiMaterialMesh = new MultiMaterial(_polygon, [material], _scene);
         this.testBasicSkin();
-        //trace(skin.materials);
-        //skin.material.color.set(0.3, 0.8, 0.1);
-        _mesh = new Mesh(_polygon, _scene);
+
+        /*_mesh = new Mesh(_polygon, _scene);
         _mesh.material.color.set(0.3, 0.8, 0.1);
-         _mesh.material.receiveShadows = false;
-        // skin.showJoints = true;
+        _mesh.material.receiveShadows = false;*/
     }
 
     private function testBasicSkin() {
-        var skeleton = new Skin('skin', _vertices.length, 1);
-        skeleton.primitive = _polygon;
-        skeleton.initWeights();
-
         var material = Material.create();
         material.color.set(0.3, 0.8, 0.1);
         material.receiveShadows = false;
 
-        var index = [];
         var buffer = [];
-        var i = 0.0;
-        for (v in _vertices) {
-            index.push(0);
-            buffer.push(i);
+        var i = 0;
+        while (i < _vertices.length) {
+            // buffer.push(_skeleton.vertexWeights[i]);
+            buffer.push(0.25);
             i++;
         }
 
-        _skeleton.split(1, index, null);
         _polygon.setWeights(buffer);
-        // trace(_skeleton.primitive.)
-        // new MeshPrimitive();
+
         var skin = new h3d.scene.Skin(_skeleton, [material], _scene);
-        skin.showJoints = true;
-        // new MeshPrimitive
-        //new Scene
+        // skin.showJoints = true;
     }
 }

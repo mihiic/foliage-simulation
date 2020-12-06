@@ -9,7 +9,9 @@ class SkinWeightsPolygon extends Polygon {
     }
 
     override function alloc( engine : h3d.Engine ) {
-		dispose();
+        dispose();
+        
+        trace(points);
 
 		var size = 3;
 		var names = ["position"];
@@ -36,15 +38,16 @@ class SkinWeightsPolygon extends Polygon {
         }
         if (weights != null) {
             names.push("weights");
-            positions.push(0);
-            size += 1;
+            /*positions.push(size);
+            size += 1;*/
 
             names.push("indexes");
-            positions.push(1);
-            size += 1;
+            /*positions.push(size);
+            size += 1;*/
         }
 
-		var buf = new hxd.FloatBuffer();
+        var skinBuffser = new hxd.FloatBuffer();
+        var buf = new hxd.FloatBuffer();
 		for( k in 0...points.length ) {
 			var p = points[k];
 			buf.push(p.x);
@@ -75,17 +78,24 @@ class SkinWeightsPolygon extends Polygon {
             }
             if (weights != null) {
                 var w = weights[k];
-                buf.push(w);
-                buf.push(w);
+                skinBuffser.push(w);
+                skinBuffser.push(0.5);
             }
 		}
 		var flags : Array<h3d.Buffer.BufferFlag> = [];
 		if( idx == null ) flags.push(Triangles);
 		if( normals == null || tangents != null ) flags.push(RawFormat);
 		buffer = h3d.Buffer.ofFloats(buf, size, flags);
+        var sbuf = h3d.Buffer.ofFloats(skinBuffser, 2, flags);
 
-		for( i in 0...names.length )
-			addBuffer(names[i], buffer, positions[i]);
+        for( i in 0...names.length ) {
+            if (names[i] == 'weights' || names[i] == 'indexes') {
+                var stride = names[i] == 'weights' ? 0 : 1;
+                addBuffer(names[i], sbuf, stride);
+            } else {
+                addBuffer(names[i], buffer, positions[i]);
+            }
+        }
 
 		if( idx != null )
 			indexes = h3d.Indexes.alloc(idx);

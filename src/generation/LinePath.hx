@@ -33,12 +33,14 @@ class LinePath {
             return;
         }
         _graphics.clear();
-        _graphics.lineStyle(10, 0xff0000);
+        _graphics.lineStyle(3, 0xff0000);
 
         var i = 1;
         while (i < _points.length) {
             _graphics.drawLine(_points[i - 1], _points[i]);
             i++;
         }
+
+        _graphics.drawLine(_points[_points.length - 1], _points[0]);
     }
 }
